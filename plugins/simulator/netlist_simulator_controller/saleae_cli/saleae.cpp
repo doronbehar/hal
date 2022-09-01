@@ -833,6 +833,7 @@ int main(int argc, const char* argv[])
             std::cout << diff_options.get_options_string();
             std::cout << export_options.get_options_string();
             std::cout << cat_options.get_options_string() << std::endl;
+            exit (1);
         }
         else if (args.is_option_set("--help") || unknown_option_exists)
         {
@@ -870,6 +871,7 @@ int main(int argc, const char* argv[])
             std::cout << cat_options.get_options_string();
             std::cout << export_options.get_options_string();
             std::cout << diff_options.get_options_string() << std::endl;
+            exit (1);
         }
         else if (args.is_option_set("--help") || unknown_option_exists)
         {
@@ -898,12 +900,14 @@ int main(int argc, const char* argv[])
             std::cout << cat_options.get_options_string();
             std::cout << diff_options.get_options_string();
             std::cout << export_options.get_options_string() << std::endl;
+            exit (1);
         }
         else if (!check_filetype(export_path))
         {
             std::cout << "\"" << export_path << "\" is an invalid export file. A export file must end with .vcd or .csv!\n\n" << std::endl;
             std::cout << tool_options.get_options_string();
             std::cout << export_options.get_options_string() << std::endl;
+            exit (1);
         }
         else if (args.is_option_set("--help") || unknown_option_exists)
         {
