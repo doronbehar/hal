@@ -106,6 +106,7 @@ std::tuple<int,int> parse_timerange(std::string timerange) {
 }
 
 
+// returns a existing time in tollerance range or -1
 int time_within_tolerance(const std::vector<uint64_t>& time_vec, int cur_time, int tolerance)
 {
     // find closest time
@@ -142,6 +143,19 @@ int time_within_tolerance(const std::vector<uint64_t>& time_vec, int cur_time, i
     }
 
     return suitable_time;
+}
+
+
+// check if the given export file is a vcd or csv file
+bool check_filetype(std::string filepath)
+{
+    if (filepath.size() > 4)
+    {
+        std::string filetype = filepath.substr(filepath.size() - 4, std::string::npos);
+        if (filetype == ".vcd" || filetype == ".csv")
+            return true;
+    }
+    return false;
 }
 
 
@@ -817,7 +831,8 @@ int main(int argc, const char* argv[])
             std::cout << tool_options.get_options_string();
             std::cout << ls_options.get_options_string();
             std::cout << cat_options.get_options_string();
-            std::cout << diff_options.get_options_string() << std::endl;
+            std::cout << diff_options.get_options_string();
+            std::cout << export_options.get_options_string() << std::endl;
         }
         else if (args.is_option_set("--help") || unknown_option_exists)
         {
@@ -853,7 +868,8 @@ int main(int argc, const char* argv[])
             std::cout << tool_options.get_options_string();
             std::cout << ls_options.get_options_string();
             std::cout << cat_options.get_options_string();
-            std::cout << diff_options.get_options_string() << std::endl;
+            std::cout << diff_options.get_options_string();
+            std::cout << export_options.get_options_string() << std::endl;
         }
         else if (args.is_option_set("--help") || unknown_option_exists)
         {
@@ -881,6 +897,12 @@ int main(int argc, const char* argv[])
             std::cout << ls_options.get_options_string();
             std::cout << cat_options.get_options_string();
             std::cout << diff_options.get_options_string();
+            std::cout << export_options.get_options_string() << std::endl;
+        }
+        else if (!check_filetype(export_path))
+        {
+            std::cout << "\"" << export_path << "\" is an invalid export file. A export file must end with .vcd or .csv!\n\n" << std::endl;
+            std::cout << tool_options.get_options_string();
             std::cout << export_options.get_options_string() << std::endl;
         }
         else if (args.is_option_set("--help") || unknown_option_exists)
