@@ -108,7 +108,9 @@ namespace hal {
         if (!of.open(QIODevice::WriteOnly)) return false;
 
         mTime = 0;
-        of.write(QByteArray("$scope module top_module $end\n"));
+
+
+        of.write(QByteArray("$timescale 1ps $end\n$scope module top_module $end\n"));
 
         int n = waves.size();
 
