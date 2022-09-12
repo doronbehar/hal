@@ -703,6 +703,9 @@ void saleae_export(std::string path_1, std::string path_2, std::string ids, std:
         id_set = parse_list_of_ids(ids);
     }
 
+    // handle csv or vcd file format
+    bool vcd_format = true; // vcd = true | csv = false
+
     // handle --time-range option
     bool tr_necessary = false;
     int time_shift, last_time;
@@ -718,36 +721,85 @@ void saleae_export(std::string path_1, std::string path_2, std::string ids, std:
         }
     }
 
-    VcdSerializer *vcd_s = new VcdSerializer(QString::fromStdString(path_2), true);
     std::string saleae_fp= path_2 + "/saleae.json";
-    WaveDataList *wave_data_list = new WaveDataList(QString::fromStdString(saleae_fp));
-    wave_data_list->updateFromSaleae();
+    if (vcd_format) {
 
-    QList<const WaveData*> wave_data_qlist;
-    if (ids_necessary) {
-        for (int id : id_set) {
-            const WaveData* wd = wave_data_list->waveDataById(id);
-            if (wd != nullptr) {
+        // import to a vcd-file
+        VcdSerializer *vcd_s = new VcdSerializer(QString::fromStdString(path_2), true);
+        WaveDataList *wave_data_list = new WaveDataList(QString::fromStdString(saleae_fp));
+        wave_data_list->updateFromSaleae();
+
+        QList<const WaveData*> wave_data_qlist;
+        if (ids_necessary) {
+            for (int id : id_set) {
+                const WaveData* wd = wave_data_list->waveDataById(id);
+                if (wd != nullptr) {
+                    wave_data_qlist.append(wd);
+                }
+            }
+        }
+        else {
+            for (const WaveData* wd : *wave_data_list) {
                 wave_data_qlist.append(wd);
             }
         }
-    }
-    else {
-        for (const WaveData* wd : *wave_data_list) {
-            wave_data_qlist.append(wd);
+        if (!tr_necessary) {
+            time_shift = 0;
+            last_time = wave_data_list->timeFrame().sceneMaxTime();
         }
-    }
-    if (!tr_necessary) {
-        time_shift = 0;
-        last_time = wave_data_list->timeFrame().sceneMaxTime();
-    }
 
-    bool ret = vcd_s->exportVcd(QString::fromStdString(path_1), wave_data_qlist, wave_data_list->timeFrame().sceneMinTime(), last_time, time_shift);
-    if (ret) {
-        exit (0);
-    }
-    else {
-        exit (1);
+        bool ret = vcd_s->exportVcd(QString::fromStdString(path_1), wave_data_qlist, wave_data_list->timeFrame().sceneMinTime(), last_time, time_shift);
+        if (ret) {
+            exit (0);
+        }
+        else {
+            exit (1);
+        }
+    } else {
+
+        // import to a csv-file
+        struct net_t
+        {
+            std::string name;
+            std::map<uint64_t, int> net_data;
+        };
+
+        SaleaeDirectory *sd = new SaleaeDirectory(saleae_fp, false);
+        std::vector<SaleaeDirectoryNetEntry> net_entries = sd->dump();
+        for (const SaleaeDirectoryNetEntry& sdne : net_entries)
+        {
+            if (!check_ids(ids_necessary, id_set, sdne.id()))
+            {
+                continue;
+            }
+
+            struct net_t cur_net;
+            net_t.name = sdne.name();
+
+            std::map<uint64_t, int> net_data; // key=time, value=row struct
+
+            for (const SaleaeDirectoryFileIndex& sdfi : sdne.indexes())
+            {
+                std::string bin_path = path_2 + "/digital_" + std::to_string(sdfi.index()) + ".bin";
+                if (!file_exists(bin_path))
+                {
+                    std::cout << "Error in database: " << path_2 << "\nCannot open file: " << bin_path << std::endl;
+                    exit (1);
+                }
+                SaleaeInputFile *sf = new SaleaeInputFile(bin_path);
+                SaleaeDataBuffer *db = sf->get_buffered_data(sf->header()->mNumTransitions);
+                // save net_data times in map
+                for (int i = 0; i < db->mCount; i++)
+                {
+                    uint64_t t = db->mTimeArray[i];
+                    time_vec.push_back(t);
+                    net_data[t] = row_t{.val_1 = db->mValueArray[i], .val_1_avail = true, .val_2_avail = false, .diff = true};
+                    diff_cnt++;
+                    // update format len
+                    cur_net.format_length[1] = (cur_net.format_length[1] < std::to_string(t).length()) ? std::to_string(t).length() : cur_net.format_length[1];
+                    cur_net.format_length[2] = (cur_net.format_length[2] < std::to_string(net_data[t].val_1).length()) ? std::to_string(net_data[t].val_1).length() : cur_net.format_length[2];
+                }
+            }
     }
 }
 
