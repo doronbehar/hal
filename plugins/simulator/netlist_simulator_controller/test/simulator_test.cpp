@@ -338,7 +338,7 @@ namespace hal
         }
 
     };    // namespace hal
-
+/*
     TEST_F(SimulatorTest, half_adder)
     {
         // return;
@@ -562,7 +562,7 @@ namespace hal
         EXPECT_TRUE(equal);
         TEST_END
     }
-
+*/
     TEST_F(SimulatorTest, toycipher)
     {
         // return;
@@ -736,7 +736,7 @@ namespace hal
         EXPECT_TRUE(equal);
         TEST_END
     }
-
+/*
     TEST_F(SimulatorTest, sha256)
     {
         // return;
@@ -1356,4 +1356,5 @@ namespace hal
         EXPECT_TRUE(equal);
         TEST_END
     }
+    */
 }    // namespace hal

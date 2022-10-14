@@ -41,7 +41,7 @@ namespace hal
     TEST_F(VerilogWriterTest, check_main) {
         TEST_START
             {
-                std::filesystem::path path_netlist = test_utils::create_sandbox_path("test.v");
+                std::filesystem::path path_netlist = test_utils::create_sandbox_path("testpin.v");
                 std::unique_ptr<Netlist> nl = std::make_unique<Netlist>(m_gl);
                 
                 {    
@@ -90,6 +90,9 @@ namespace hal
                 VerilogWriter verilog_writer;
                 ASSERT_TRUE(verilog_writer.write(nl.get(), path_netlist).is_ok());
 
+                std::ifstream fdump(path_netlist);
+                if (fdump.good())
+                    std::cout << "----\n" << fdump.rdbuf() << "----" << std::endl;
                 VerilogParser verilog_parser;
                 auto parsed_nl_res = verilog_parser.parse_and_instantiate(path_netlist, m_gl);
                 ASSERT_TRUE(parsed_nl_res.is_ok());
