@@ -5,14 +5,17 @@ add_library(netlist SHARED ${NETLIST_LIB_INCLUDE} ${NETLIST_LIB_SOURCE} ${CMAKE_
 set_target_properties(netlist PROPERTIES OUTPUT_NAME "hal_netlist")
 add_library(hal::netlist ALIAS netlist)
 
+set (Bitwuzla_FOUND 0)
 if(${USE_BITWUZLA})
    list (APPEND INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_BINARY_DIR}/bitwuzla/include")
    list (APPEND INTERFACE_LINK_LIBRARIES ${BITWUZLA_LIBRARY})
    #   target_compile_definitions(core PRIVATE BITWUZLA_LIBRARY=1)
-   set (Bitwuzla_FOUND TRUE)
+   set (Bitwuzla_FOUND 1)
    add_compile_definitions(BITWUZLA_LIBRARY)
-   message(STATUS "use bitwuzla, adding define for solver query to bitwuzla library $<${USE_BITWUZLA}:${CMAKE_BINARY_DIR}/bitwuzla/include>")
+   message(STATUS "use bitwuzla, adding define for solver query to bitwuzla library $<${Bitwuzla_FOUND}:${CMAKE_BINARY_DIR}/bitwuzla/include>")
 endif()
+
+
 
 target_include_directories(netlist
                            PUBLIC
@@ -21,7 +24,7 @@ target_include_directories(netlist
                            $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
                            ${Z3_INCLUDE_DIRS}
                            ${RAPIDJSON_INCLUDEDIR}
-			   $<${USE_BITWUZLA}:${CMAKE_BINARY_DIR}/bitwuzla/include>
+			   $<${Bitwuzla_FOUND}:${CMAKE_BINARY_DIR}/bitwuzla/include>
                            )
 
 target_compile_options(netlist
