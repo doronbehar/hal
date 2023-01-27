@@ -35,9 +35,15 @@ set_target_properties (bitwuzla::bitwuzla   PROPERTIES IMPORTED_LOCATION ${BITWU
 set_target_properties (bitwuzla::cadical    PROPERTIES IMPORTED_LOCATION ${CADICAL_LIB})
 set_target_properties (bitwuzla::tor2parser PROPERTIES IMPORTED_LOCATION ${TOR2PARSER_LIB})
 
-add_dependencies ( bitwuzla::bitwuzla   bitwuzla_extern )
+add_dependencies ( bitwuzla::bitwuzla   bitwuzla_extern bitwuzla::cadical bitwuzla::tor2parser )
 add_dependencies ( bitwuzla::cadical    bitwuzla_extern )
 add_dependencies ( bitwuzla::tor2parser bitwuzla_extern )
+
+target_link_options(bitwuzla::bitwuzla INTERFACE
+  -Wl,--whole-archive
+   ${CADICAL_LIB} ${TOR2PARSER_LIB}
+  -Wl,--no-whole-archive
+)
 
 mark_as_advanced (
   HAVE_BITWUZLA

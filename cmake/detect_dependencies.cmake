@@ -31,7 +31,7 @@ if(${USE_BITWUZLA})
    add_subdirectory("${CMAKE_SOURCE_DIR}/deps/bitwuzla")
    find_package(GMP REQUIRED)
    set (Bitwuzla_FOUND TRUE)
-   set (BITWUZLA_LIBRARY bitwuzla::bitwuzla bitwuzla::cadical bitwuzla::tor2parser gmp)
+   set (BITWUZLA_LIBRARY bitwuzla::bitwuzla gmp)
 endif()
 
 # ###############################
