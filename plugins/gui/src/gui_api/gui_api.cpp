@@ -428,4 +428,9 @@ namespace hal
     {
         gSelectionRelay->clearAndUpdate();
     }
+
+    void GuiApi::demoAction()
+    {
+        qInfo() << "TEST FUNCTION CALLED";
+    }
 }

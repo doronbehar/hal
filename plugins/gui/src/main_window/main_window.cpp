@@ -264,6 +264,9 @@ namespace hal
         mMenuHelp->addAction(mActionAbout);
         mMenuHelp->addSeparator();
         mMenuHelp->addAction(mActionPlugins);
+        //Homework Assignment
+        mMenuHelp->addAction("Test developed function", [this] () {this->testDemoAction();});
+
         mLeftToolBar->addAction(mActionNew);
         mLeftToolBar->addAction(mActionOpenProject);
         mLeftToolBar->addAction(mActionSave);
@@ -1069,5 +1072,12 @@ namespace hal
     void MainWindow::saveState()
     {
         SettingsManager::instance()->mainWindowSaveGeometry(pos(), size());
+    }
+
+    void MainWindow::testDemoAction()
+    {
+        qInfo() << "TEST ACTION FROM MAIN WINDOW";
+        GuiApi mGuiApi = GuiApi();
+        mGuiApi.demoAction();
     }
 }    // namespace hal
