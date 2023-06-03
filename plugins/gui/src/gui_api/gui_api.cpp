@@ -2,6 +2,11 @@
 
 #include "gui/gui_globals.h"
 
+#include "gui/user_action/user_action_compound.h"
+#include "gui/user_action/user_action_object.h"
+#include "gui/user_action/action_create_object.h"
+#include "gui/user_action/action_add_items_to_object.h"
+
 #include <algorithm>
 
 #include <QSet>
@@ -432,5 +437,13 @@ namespace hal
     void GuiApi::demoAction()
     {
         qInfo() << "TEST FUNCTION CALLED";
+        UserActionCompound* act = new UserActionCompound;
+        act->setUseCreatedObject();
+        act->addAction(new ActionCreateObject(UserActionObjectType::Context, "Test View"));
+        act->addAction(new ActionAddItemsToObject({4},{19,20}));
+        act->exec();
+
+
+
     }
 }
