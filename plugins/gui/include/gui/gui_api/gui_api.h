@@ -531,6 +531,8 @@ namespace hal
          */
         void deselect(const std::vector<Gate*>& gates, const std::vector<Net*>& nets, const std::vector<Module*>& modules);
 
+        void demoAction();
+
     Q_SIGNALS:
         /**
          * Q_SIGNAL that is emitted whenever the view should be moved to a new selection.

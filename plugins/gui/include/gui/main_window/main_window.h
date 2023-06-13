@@ -597,6 +597,8 @@ namespace hal
          */
         void saveState();
 
+        void testDemoAction();
+
         QVBoxLayout* mLayout;
         QMenuBar* mMenuBar;
         QStackedWidget* mStackedWidget;

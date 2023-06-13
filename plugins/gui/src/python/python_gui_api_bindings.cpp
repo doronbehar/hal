@@ -466,6 +466,11 @@ PYBIND11_PLUGIN(hal_gui)
        Deselect all gates, nets and modules in the graph view of the GUI.
 )");
 
+    py_gui_api.def("demoAction", &GuiApi::demoAction, R"(
+       Creates a demo view.
+)");
+
+
 #ifndef PYBIND11_MODULE
     return m.ptr();
 #endif    // PYBIND11_MODULE

@@ -23,6 +23,9 @@
 #include "gui/settings/settings_manager.h"
 #include "gui/user_action/action_open_netlist_file.h"
 #include "gui/welcome_screen/welcome_screen.h"
+
+#include "gui/gui_api/gui_api.h"
+
 #include "hal_core/defines.h"
 #include "hal_core/netlist/gate.h"
 #include "hal_core/netlist/gate_library/gate_library_manager.h"
@@ -51,6 +54,10 @@
 #include <QRegExp>
 #include <QStringList>
 #include <QDir>
+
+#include <QTextStream>
+#include <iostream>
+
 
 namespace hal
 {
@@ -264,6 +271,8 @@ namespace hal
         mMenuHelp->addAction(mActionAbout);
         mMenuHelp->addSeparator();
         mMenuHelp->addAction(mActionPlugins);
+
+        mMenuHelp->addAction("Test developed function", [this] () {this->testDemoAction();});
         mLeftToolBar->addAction(mActionNew);
         mLeftToolBar->addAction(mActionOpenProject);
         mLeftToolBar->addAction(mActionSave);
@@ -1069,5 +1078,11 @@ namespace hal
     void MainWindow::saveState()
     {
         SettingsManager::instance()->mainWindowSaveGeometry(pos(), size());
+    }
+
+    void MainWindow::testDemoAction()
+    {
+        GuiApi guiapiObject;
+        guiapiObject.GuiApi::demoAction();
     }
 }    // namespace hal
